@@ -1,5 +1,29 @@
-
 # EE-666: Assignment 3 - Panaroma Stitching
+
+<div align = "center">
+    <img src = "https://github.com/guntas-13/ES666-Assignment3/blob/main/results/I1/GuntasSaran_stitcher.png" style="width: 100%">
+</div>
+
+<div align = "center">
+    <img src = "https://github.com/guntas-13/ES666-Assignment3/blob/main/results/I2/GuntasSaran_stitcher.png" style="width: 100%">
+</div>
+
+<div align = "center">
+    <img src = "https://github.com/guntas-13/ES666-Assignment3/blob/main/results/I3/GuntasSaran_stitcher.png" style="width: 100%">
+</div>
+
+<div align = "center">
+    <img src = "https://github.com/guntas-13/ES666-Assignment3/blob/main/results/I4/GuntasSaran_stitcher.png" style="width: 100%">
+</div>
+
+<div align = "center">
+    <img src = "https://github.com/guntas-13/ES666-Assignment3/blob/main/results/I5/GuntasSaran_stitcher.png" style="width: 100%">
+</div>
+
+<div align = "center">
+    <img src = "https://github.com/guntas-13/ES666-Assignment3/blob/main/results/I6/GuntasSaran_stitcher.png" style="width: 100%">
+</div>
+
 
 ## Given a set of images, Find Homography matrices and stitch images to make a Panaroma.
 This assignment is intended to provide practical experience with GitHub, along with the concepts discussed in class.
