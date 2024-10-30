@@ -29,11 +29,11 @@ for idx,algo in enumerate(all_submissions):
             print('\t\t Processing... {}'.format(impaths))
             stitched_image, homography_matrix_list = inst.make_panaroma_for_images_in(path=impaths)
 
-            outfile =  './results/{}/{}.png'.format(impaths.split(os.sep)[-1],spec.name)
+            outfile =  './results1/{}/{}.png'.format(impaths.split(os.sep)[-1],spec.name)
             os.makedirs(os.path.dirname(outfile),exist_ok=True)
             cv2.imwrite(outfile,stitched_image)
             print(homography_matrix_list)
-            print('Panaroma saved ... @ ./results/{}.png'.format(spec.name))
+            print('Panaroma saved ... @ ./results1/{}.png'.format(spec.name))
             print('\n\n')
 
     except Exception as e:
