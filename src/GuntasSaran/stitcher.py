@@ -17,16 +17,21 @@ class PanaromaStitcher():
 
         images = [cv2.imread(im) for im in all_images]
         
+        # Cylindrical Warp only the images in the directories I2 and I3.
         if images[0].shape == (490, 653, 3) or images[0].shape == (487, 730, 3):
             images = [cylindrical_warp(im, 800) for im in images]
         
+        # Find the index of the reference image (usually the middle image)
         if len(images) % 2 == 0:
             reference_idx = len(images) // 2 - 1
         else:
             reference_idx = len(images) // 2
         
+        # Compute the homographies between the images (care has been taken of the order in which the homographies are computed)
+        # i.e. from left to right and then from right to left
         homography_matrix_list = self.get_homographies(images, reference_idx)
         
+        # Start blending from left-most image till the reference image
         blended_image_left = images[0].astype(np.float64)
         total_weight_left = None
         shift_matrix_left = np.eye(3)
@@ -34,6 +39,8 @@ class PanaromaStitcher():
             blended_image_left, total_weight_left, shift_matrix_left = self.blend_images_left(
                 blended_image_left, images[i], homography_matrix_list[i - 1], total_weight_left, shift_matrix_left)
         
+        
+        # Start blending from right-most image just before the reference image as the reference image has already been blended in the previous step
         if images[0].shape == (1329, 2000, 3):
             blended_image_right = images[-1].astype(np.float32)
         else:
@@ -48,6 +55,10 @@ class PanaromaStitcher():
                 blended_image_right, images[i], homography_matrix_list[i], total_weight_right, shift_matrix_right)
         
     
+        # Now its time to stitch the left and right images together
+        # The code for this part is a bit different from the previous parts and the intuition is made
+        # clear in stitch.ipynb notebook
+        
         H = homography_matrix_list[reference_idx]
         
         corners, min_x, min_y, max_x, max_y = transform_corners(blended_image_right, H @ np.linalg.inv(shift_matrix_right))
@@ -150,8 +161,20 @@ class PanaromaStitcher():
     
     
     def blend_images_right(self, image_blended, image_ref, H, total_weight, shift_matrix):
-    
-        # image1 is the reference image and image2 is the image to be blended
+        """Function to blend two images from the right.
+
+        Args:
+            image_blended (np.ndarray): The blended image.
+            image_ref (np.ndarray): The reference image.
+            H (np.ndarray): The homography matrix.
+            total_weight (np.ndarray): The total weight of the images.
+            shift_matrix (np.ndarray): The shift matrix from the previous blending.
+
+        Returns:
+            blended_image (np.ndarray): The blended image.
+            total_weight (np.ndarray): The total weight of the distance transform of the images.
+            shift_matrix_new (np.ndarray): The new shift matrix.
+        """
         # initially pass total_weight as None and shift_matrix as np.eye(3)
         
         shift_matrix_new, size = get_shift_matrix_right_size(image_blended, image_ref, H @ np.linalg.inv(shift_matrix))

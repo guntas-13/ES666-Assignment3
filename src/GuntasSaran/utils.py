@@ -1,8 +1,14 @@
+# Blending using distance transform, motivated from the source:
+# https://github.com/CorentinBrtx/image-stitching
+
+# Cylinder Blending Resource: https://youtu.be/taty6lPVcmA?si=fBRYFtpOcZH_2bt1 (The Ancient Secrets of Computer Vision - 07 - Matching, RANSAC, SIFT, and HOG)
+# Overall stitching source: https://youtu.be/D9rAOAL12SY?si=ix3A5t0hIveV1Bqv (First Principles of Computer Vision: Image Stitching Playlist)
+
 import numpy as np
 from PIL import Image
 import cv2
 
-
+# Implementation of cv2.warpPerspective from scratch using inverse homography matrix and then bilinear interpolation
 def transform(src_pts, H):
     """Transform points with a homography matrix."""
     src = np.pad(src_pts, [(0, 0), (0, 1)], constant_values=1)
@@ -58,6 +64,15 @@ def my_warp_perspective(img, H, size):
 
 
 def cylindrical_warp(image, focal_length):
+    """Warp an image to cylindrical coordinates.
+
+    Args:
+        image (np.ndarray): The input image.
+        focal_length (int): The focal length of the camera.
+
+    Returns:
+        np.ndarray: The cylindrical image.
+    """
     h, w = image.shape[:2]
     x_c, y_c = w // 2, h // 2
 
@@ -122,6 +137,17 @@ def transform_corners(image, H):
     return dest_corners, min_x, min_y, max_x, max_y
 
 def get_shift_matrix_left_size(image, image_ref, H):
+    """Function to get the shift matrix and size of the final image for the left side of the panorama.
+
+    Args:
+        image (np.ndarray): The image to be stitched.
+        image_ref (np.ndarray): The reference image.
+        H (np.ndarray): The homography matrix.
+
+    Returns:
+        np.ndarray: The shift matrix.
+        tuple: The size of the final image
+    """
     corners, min_x, min_y, max_x, max_y = transform_corners(image, H)
     shift_matrix = np.array([[1, 0, -min_x], [0, 1, -min_y], [0, 0, 1]])
     size = image_ref.shape[1] - int(min_x), image_ref.shape[0] - int(min_y)
