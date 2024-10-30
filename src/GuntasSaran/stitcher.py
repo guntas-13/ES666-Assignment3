@@ -35,9 +35,11 @@ class PanaromaStitcher():
                 blended_image_left, images[i], homography_matrix_list[i - 1], total_weight_left, shift_matrix_left)
         
         if images[0].shape == (1329, 2000, 3):
-            blended_image_right = images[-1].astype(np.float64)
+            blended_image_right = images[-1].astype(np.float32)
         else:
             blended_image_right = images[-1]
+            
+        # blended_image_right = images[-1].astype(np.float64)
         total_weight_right = None
         shift_matrix_right = np.eye(3)
         
@@ -154,6 +156,7 @@ class PanaromaStitcher():
         
         shift_matrix_new, size = get_shift_matrix_right_size(image_blended, image_ref, H @ np.linalg.inv(shift_matrix))
         shift_matrix_new = shift_matrix_new.astype(np.float64)
+        
         warped_image_ref = cv2.warpPerspective(image_ref, shift_matrix_new, size)
         warped_image_blended = cv2.warpPerspective(image_blended, shift_matrix_new @ H @ np.linalg.inv(shift_matrix), size)
         
